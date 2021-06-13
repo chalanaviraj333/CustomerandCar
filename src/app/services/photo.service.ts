@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Storage } from '@capacitor/storage';
-import { Platform } from '@ionic/angular';
+import { LoadingController, Platform } from '@ionic/angular';
+import { base64StringToBlob } from 'blob-util';
+import { CustomerData } from '../customer-data';
 
 
 
@@ -12,41 +16,20 @@ import { Platform } from '@ionic/angular';
 })
 export class PhotoService {
   public photos: UserPhoto[] = [];
+  private photoID: string = '';
   private PHOTO_STORAGE: string = 'photos';
 
-  constructor(private platform: Platform) {}
-
-  public async loadSaved() {
-    // Retrieve cached photo array data
-    const photoList = await Storage.get({ key: this.PHOTO_STORAGE });
-    this.photos = JSON.parse(photoList.value) || [];
-
-    // If running on the web...
-    if (!this.platform.is('hybrid')) {
-      // Display the photo by reading into base64 format
-      for (let photo of this.photos) {
-        // Read each saved photo's data from the Filesystem
-        const readFile = await Filesystem.readFile({
-          path: photo.filepath,
-          directory: Directory.Data,
-        });
-
-        // Web platform only: Load the photo as base64 data
-        photo.webviewPath = `data:image/jpeg;base64,${readFile.data}`;
-      }
+  constructor(private platform: Platform,
+    private storage: AngularFireStorage,
+    private router: Router,
+    public loadingController: LoadingController) {
     }
-  }
 
-  /* Use the device camera to take a photo:
-  // https://capacitor.ionicframework.com/docs/apis/camera
-
-  // Store the photo data into permanent file storage:
-  // https://capacitor.ionicframework.com/docs/apis/filesystem
-
-  // Store a reference to all photo filepaths using Storage API:
-  // https://capacitor.ionicframework.com/docs/apis/storage
-  */
   public async addNewToGallery() {
+
+    // clear previous photos from Array
+    this.photos = [];
+
     // Take a photo
     const capturedPhoto = await Camera.getPhoto({
       resultType: CameraResultType.Uri, // file-based data; provides best performance
@@ -56,9 +39,10 @@ export class PhotoService {
 
     const savedImageFile = await this.savePicture(capturedPhoto);
 
+    this.photoID= await this.readAsBase64(capturedPhoto);
+   
     // Add new photo to Photos array
     this.photos.unshift(savedImageFile);
-
     // Cache all photo data for future retrieval
     Storage.set({
       key: this.PHOTO_STORAGE,
@@ -71,6 +55,7 @@ export class PhotoService {
     // Convert photo to base64 format, required by Filesystem API to save
     const base64Data = await this.readAsBase64(cameraPhoto);
 
+  
     // Write the file to the data directory
     const fileName = new Date().getTime() + '.jpeg';
     const savedFile = await Filesystem.writeFile({
@@ -143,6 +128,95 @@ export class PhotoService {
       };
       reader.readAsDataURL(blob);
     });
+
+
+
+    async uploadPhotoIdFrontPage(customerData: CustomerData, carJob: boolean) {
+
+      const newCustomer: CustomerData = customerData;
+      const SelectediscarJob = carJob;
+
+      const loading = await this.loadingController.create({
+        cssClass: 'my-custom-class',
+        message: 'Uploading Photo ID',
+        backdropDismiss: false
+      });
+      await loading.present();
+
+      const contenttype = 'image/png';
+
+      const b64Data = this.photoID.split(',').pop();
+
+      const blob = base64StringToBlob(b64Data, contenttype);
+
+      const filename = newCustomer.customerFirstName +  newCustomer.customerLastName + newCustomer.phoneNumber;
+    
+      const uploadTask = this.storage.upload('customerPhotoID-Front/' + filename, blob);
+
+      uploadTask.percentageChanges().subscribe(changes => {
+
+        if (changes == 100 && SelectediscarJob == true){
+          this.router.navigateByUrl('addphotoIDBack/'
+          + newCustomer.customerFirstName + '/' + newCustomer.customerLastName + '/' + newCustomer.phoneNumber + '/' + newCustomer.jobType + '/' + newCustomer.carRego);
+          loading.dismiss();
+          this.clearallphotos();
+        }
+        else if (changes == 100 && SelectediscarJob == false){
+          this.router.navigateByUrl('addphotoIDBack/' + newCustomer.customerFirstName + '/' + newCustomer.customerLastName + '/' + newCustomer.phoneNumber + '/' + newCustomer.jobType );
+          loading.dismiss();
+          this.clearallphotos();
+        }
+      });
+
+  }
+
+
+
+
+  async uploadPhotoIdBackPage(customerData: CustomerData, carJob: boolean) {
+
+    const newCustomer: CustomerData = customerData;
+    const SelectediscarJob = carJob;
+
+    const loading = await this.loadingController.create({
+      cssClass: 'my-custom-class',
+      message: 'Uploading Photo ID',
+      backdropDismiss: false
+    });
+    await loading.present();
+
+    const contenttype = 'image/png';
+
+    const b64Data = this.photoID.split(',').pop();
+
+    const blob = base64StringToBlob(b64Data, contenttype);
+
+    const filename = newCustomer.customerFirstName +  newCustomer.customerLastName + newCustomer.phoneNumber;
+  
+    const uploadTask = this.storage.upload('customerPhotoID-Back/' + filename, blob);
+
+    uploadTask.percentageChanges().subscribe(changes => {
+
+      if (changes == 100 && SelectediscarJob == true){
+        this.router.navigateByUrl('detailviewpage/'+ newCustomer.customerFirstName + '/' + newCustomer.customerLastName + '/' + newCustomer.phoneNumber + '/' + newCustomer.jobType + '/' + newCustomer.carRego );
+        loading.dismiss();
+        this.clearallphotos();
+      }
+      else if (changes == 100 && SelectediscarJob == false){
+        this.router.navigateByUrl('detailviewpage/'+ newCustomer.customerFirstName + '/' + newCustomer.customerLastName + '/' + newCustomer.phoneNumber + '/' + newCustomer.jobType );
+        loading.dismiss();
+        this.clearallphotos();
+
+      }
+    });
+
+}
+
+  clearallphotos() {
+    this.photos = [];
+  }
+
+    
 }
 
 export interface UserPhoto {

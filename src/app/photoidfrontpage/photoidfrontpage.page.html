@@ -1,0 +1,41 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button class="fonttype" [defaultHref]="['/']"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="fonttype">Add Photo ID</ion-title>
+  </ion-toolbar>
+
+
+</ion-header>
+
+<ion-content>
+  <div class="headerLabel">
+    <ion-label *ngIf="photoService.photos?.length == 0" class="ion-text-wrap fonttype">Hi {{customerData.customerFirstName}}, Please take a photo of the front of your driving licence.</ion-label>
+  </div>
+
+  <ion-grid>
+    <ion-row>
+    <ion-col size="12" *ngFor="let photo of photoService.photos; index as position">
+      <ion-img [src]="photo.webviewPath" (click)="showActionSheet(photo, position)"></ion-img>
+    </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div>
+    <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+      <ion-fab-button (click)="photoService.addNewToGallery()">
+        <ion-icon name="camera"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="onClickNext()" [disabled]= "photoService.photos?.length == 0">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+  </div>
+  
+</ion-content>

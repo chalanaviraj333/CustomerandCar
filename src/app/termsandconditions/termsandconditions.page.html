@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button class="fonttype" [defaultHref]="['/home/' , customerData.jobType]"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="fonttype">Customer Agreement</ion-title>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <div class="bodycontent">
+    <h3 class="fonttype">Term and Conditions </h3>
+
+
+  <ion-list>
+    <li class="inputtypefont">
+      1. I solely agreed and give permission to program a spare key for my car.
+    </li>
+    <br>
+    <li class="inputtypefont">
+      2.  systematically retrieve data or other content from the Site to create or compile, directly or indirectly, a collection, compilation, database, or directory without written permission from us.
+    </li>
+    <br>
+    <li class="inputtypefont">
+      3. use a buying agent or purchasing agent to make purchases on the Site.
+    </li>
+    <br>
+    <li class="inputtypefont">
+      4. use the Site to advertise or offer to sell goods and services.
+    </li>
+  </ion-list>
+
+
+  <ion-item class="agreecheckbox" lines="none">
+    <ion-checkbox [(ngModel)]="isChecked"></ion-checkbox>
+  <ion-label class="ion-text-wrap fonttype">I agree to Tapsy terms and conditions</ion-label>
+
+  </ion-item>
+  
+
+  <ion-button expand="block" class="fonttype" (click)="onClickNext()" [disabled]="!isChecked">Next</ion-button>
+
+  </div>
+
+  
+
+  
+
+
+
+
+
+
+</ion-content>

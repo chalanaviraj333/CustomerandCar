@@ -1,17 +1,37 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button class="fonttype" [defaultHref]="['/']"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="fonttype">
+      Signature Pad
     </ion-title>
+  </ion-toolbar >
+  <ion-toolbar color="primary">
+
+    <ion-buttons slot="end">
+      <ion-button class="fonttype" color="light" expand="full" (click)="undo()"> Undo</ion-button>
+      <ion-button class="fonttype" color="light" expand="full" (click)="clear()"> Clear</ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <div class="signature-pad">
+    <div>
+      <canvas class="signature-pad-canvas" #canvas width="900" height="400" style="touch-action: none;"></canvas>
+    </div>
+  </div>
+
+  <div>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button [disabled]="isCanvasBlank()" (click)="onClickNext()" [disabled]= "photoService.photos?.length == 0">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+  </div>
 </ion-content>

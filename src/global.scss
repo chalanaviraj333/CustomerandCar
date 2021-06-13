@@ -25,6 +25,10 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+.ion-invalid.ion-touched ion-label {
+  color: var(--ion-color-danger);
+}
+
 @media (prefers-color-scheme: dark) {
   /*
    * Dark Colors

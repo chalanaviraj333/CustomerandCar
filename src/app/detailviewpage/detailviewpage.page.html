@@ -1,0 +1,52 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title class="fonttype">Thank You</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/">
+        <ion-icon slot="icon-only" name="checkmark-sharp"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <h3 class="ion-text-wrap fonttype">Thank you {{customerData.customerFirstName}},</h3>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-label class="fonttype">We promise we won't share your data with any marketing campaigns.</ion-label>
+      </ion-col>
+    </ion-row>
+
+    
+      <ion-row>
+        <ion-col size-xs="10" offset-xs="1" size-sm="10" offset-sm="1" size-md="10" offset-md="1">
+
+          <ion-card>
+            <ion-card-header class="fonttype">PHOTO ID / Front</ion-card-header>
+            <ion-img src="{{customerPhotoIDFrontPage}}"></ion-img>
+          </ion-card>
+          
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-xs="10" offset-xs="1" size-sm="10" offset-sm="1" size-md="10" offset-md="1">
+
+          <ion-card>
+            <ion-card-header class="fonttype">PHOTO ID / Back</ion-card-header>
+            <ion-img src="{{customerPhotoIDBackPage}}"></ion-img>
+          </ion-card>
+          
+        </ion-col>
+      </ion-row>
+      
+  </ion-grid>
+
+</ion-content>

@@ -1,0 +1,46 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button class="fonttype" [defaultHref]="['/']"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="fonttype">Customer Details</ion-title>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+    <div class="bodycontent">
+      <ion-item>
+        <ion-label position="floating" class="inputtypefont">First name</ion-label>
+        <ion-input type="text" class="fonttype" ngModel name="customerFirstName" required minlength="3" #customerfirstnameCtrl="ngModel"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating" class="inputtypefont">Last name</ion-label>
+          <ion-input type="text" class="fonttype" ngModel name="customerLastName" required minlength="3" #customerlastnameCtrl="ngModel"></ion-input>
+          </ion-item>
+    
+      <ion-item>
+        <ion-label position="floating" class="inputtypefont">Phone no</ion-label>
+        <ion-input type="tel" class="fonttype" ngModel name="phoneNumber" required minlength="10" #phonenumberCtrl="ngModel"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="!houseJob">
+        <ion-label position="floating" class="inputtypefont">Car rego</ion-label>
+        <ion-input type="text" class="fonttype" ngModel name="carRego"></ion-input>
+      </ion-item>
+      
+      <ion-button type="submit" expand="block" class="fonttype" [disabled]="!f.valid">Next</ion-button>
+  
+    </div>
+
+  </form>
+  
+
+  <!-- [disabled]="!f.valid" -->
+
+  
+
+</ion-content>
